@@ -1,0 +1,29 @@
+﻿<UserControl 
+    x:Class="Framework.View.Led1View"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:conv="clr-namespace:Framework.ViewModel"
+    mc:Ignorable="d" 
+    d:DesignHeight="25" d:DesignWidth="25">
+	<UserControl.Resources>
+		<conv:BoolToVisibilityConverter x:Key="boolToVisiblity"/>
+	</UserControl.Resources>
+	<Grid>
+		<Grid
+			Visibility="{Binding Path=Value, ConverterParameter=false, Converter={StaticResource boolToVisiblity}, FallbackValue=Hidden}">
+			<Ellipse 
+				Visibility="{Binding Path=Value, ConverterParameter=false, Converter={StaticResource boolToVisiblity}, FallbackValue=Hidden}"
+				Fill="{Binding Path=ColorOn, FallbackValue=Green}"
+				Width="10" Height="10"/>
+		</Grid>
+		<Grid
+			Visibility="{Binding Path=Value, ConverterParameter=true, Converter={StaticResource boolToVisiblity}, FallbackValue=Visible}">
+			<Label
+				Visibility="{Binding Path=Value, ConverterParameter=true, Converter={StaticResource boolToVisiblity}, FallbackValue=Visible}"
+				Content="-"
+				HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="0" Padding="0"/>
+		</Grid>
+	</Grid>
+</UserControl>

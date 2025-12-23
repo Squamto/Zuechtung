@@ -1,0 +1,53 @@
+﻿<UserControl x:Class="Vgf.View.SmartlinkView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Vgf.View"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Canvas>
+        <Canvas
+            Canvas.Left="25" Canvas.Top="25">
+            <TextBox
+                Canvas.Left="5"
+                Text="1"
+                Width="120" Height="45" FontSize="20" FontWeight="Bold" 
+                HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="True"/>
+            <TextBox
+                Canvas.Left="130"
+                Text="2"
+                Width="120" Height="45" FontSize="20" FontWeight="Bold" 
+                HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="True"/>
+            <TextBox
+                Canvas.Left="255"
+                Text="3"
+                Width="120" Height="45" FontSize="20" FontWeight="Bold" 
+                HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="True"/>
+            <TextBox
+                Canvas.Left="380"
+                Text="4"
+                Width="120" Height="45" FontSize="20" FontWeight="Bold" 
+                HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="True"/>
+            <TextBox
+                Canvas.Left="505"
+                Text="5"
+                Width="120" Height="45" FontSize="20" FontWeight="Bold" 
+                HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="True"/>
+            <TextBox
+                Canvas.Left="630"
+                Text="6"
+                Width="120" Height="45" FontSize="20" FontWeight="Bold" 
+                HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="True"/>
+            <local:SmartlinkDeviceView
+                Canvas.Top="55"
+                DataContext="{Binding Path=Smartlink1, Mode=OneWay}"/>
+            <local:SmartlinkDeviceView
+                Canvas.Top="105"
+                DataContext="{Binding Path=Smartlink2, Mode=OneWay}"/>
+            <local:SmartlinkDeviceView
+                Canvas.Top="155"
+                DataContext="{Binding Path=Smartlink3, Mode=OneWay}"/>
+        </Canvas>
+    </Canvas>
+</UserControl>

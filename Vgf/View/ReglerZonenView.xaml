@@ -1,0 +1,97 @@
+﻿<UserControl x:Class="Vgf.View.ReglerZonenView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Vgf.View"
+             mc:Ignorable="d" 
+             d:DesignHeight="500" d:DesignWidth="800">
+    <Canvas>
+        <Canvas
+            Canvas.Left="10" Canvas.Top="25">
+            <TextBox
+                Canvas.Left="70"
+                Text="Sollwert Manual"
+                Width="70" Height="45" FontSize="12" FontWeight="Bold" 
+                AcceptsReturn="True" TextWrapping="Wrap"
+                HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="True"/>
+            <TextBox
+                Canvas.Left="150"
+                Text="Diff"
+                Width="70" Height="45" FontSize="16" FontWeight="Bold" 
+                HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="True"/>
+            <TextBox
+                Canvas.Left="230"
+                Text="PAnteil"
+                Width="70" Height="45" FontSize="16" FontWeight="Bold" 
+                HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="True"/>
+            <TextBox
+                Canvas.Left="310"
+                Text="ITerm"
+                Width="70" Height="45" FontSize="16" FontWeight="Bold"
+                HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="True"/>
+            <TextBox
+                Canvas.Left="390"
+                Text="IPuffer"
+                Width="70" Height="45" FontSize="16" FontWeight="Bold"
+                HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="True"/>
+            <TextBox
+                Canvas.Left="470"
+                Text="MaxP"
+                Width="70" Height="45" FontSize="16" FontWeight="Bold"
+                HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="True"/>
+            <TextBox
+                Canvas.Left="550"
+                Text="Stellfaktor"
+                Width="70" Height="45" FontSize="14" FontWeight="Bold"
+                HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="True"/>
+            <TextBox
+                Canvas.Left="630"
+                Text="Ipuffer Stellfaktor"
+                Width="70" Height="45" FontSize="12" FontWeight="Bold"
+                HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="True" TextWrapping="Wrap" AcceptsReturn="True"/>
+            <TextBox
+                Canvas.Left="710"
+                Text="Stellwert"
+                Width="70" Height="45" FontSize="16" FontWeight="Bold"
+                HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="True"/>
+            <local:ReglerZoneView
+                Canvas.Top="55"
+                DataContext="{Binding Path=Zone7, Mode=OneWay}"/>
+            <local:ReglerZoneView
+                Canvas.Top="105"
+                DataContext="{Binding Path=Zone6, Mode=OneWay}"/>
+            <local:ReglerZoneView
+                Canvas.Top="155"
+                DataContext="{Binding Path=Zone5, Mode=OneWay}"/>
+            <local:ReglerZoneView
+                Canvas.Top="205"
+                DataContext="{Binding Path=Zone4, Mode=OneWay}"/>
+            <local:ReglerZoneView
+                Canvas.Top="255"
+                DataContext="{Binding Path=Zone3, Mode=OneWay}"/>
+            <local:ReglerZoneView
+                Canvas.Top="305"
+                DataContext="{Binding Path=Zone2, Mode=OneWay}"/>
+            <local:ReglerZoneView
+                Canvas.Top="355"
+                DataContext="{Binding Path=Zone1, Mode=OneWay}"/>
+            <TextBox
+                Canvas.Left="70" Canvas.Top="410"
+                Text="{Binding Path=AllManualTemperature, Mode=TwoWay}"
+                Width="70" Height="45" FontSize="16" FontWeight="Bold" 
+                HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+            <Button
+                Canvas.Left="5" Canvas.Top="410"
+                Command="{Binding Path=SetAllManualCommand}"
+                Width="55" Height="45" FontSize="14"
+                HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
+                <TextBlock>
+                Set All
+                <LineBreak/>
+                Manual
+                </TextBlock>
+            </Button>
+        </Canvas>
+    </Canvas>
+</UserControl>

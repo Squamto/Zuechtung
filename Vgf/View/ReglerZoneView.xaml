@@ -1,0 +1,67 @@
+﻿<UserControl x:Class="Vgf.View.ReglerZoneView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Vgf.View"
+             mc:Ignorable="d" 
+             d:DesignHeight="50" d:DesignWidth="800">
+    <Canvas>
+        <TextBox
+            Canvas.Left="0"
+            Text="{Binding Path=ZoneNr, Mode=OneWay}"
+            Width="30" Height="45" FontSize="20" FontWeight="Bold" 
+            HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="True"/>
+        <TextBlock
+            Canvas.Left="38"
+            Text="Man"/>
+        <CheckBox
+            Canvas.Left="40" Canvas.Top="20"
+            IsChecked="{Binding Path=IsManualTemperature}"/>
+        <TextBox
+            Canvas.Left="70"
+            Text="{Binding Path=ManualTemperature, Mode=TwoWay}"
+            Width="70" Height="45" FontSize="16" FontWeight="Bold" 
+            HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+        <TextBox
+            Canvas.Left="150"
+            Text="{Binding Path=Difference, Mode=OneWay}"
+            Width="70" Height="45" FontSize="16" FontWeight="Bold" 
+            HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="True"/>
+        <TextBox
+            Canvas.Left="230"
+            Text="{Binding Path=PAnteil, Mode=OneWay}"
+            Width="70" Height="45" FontSize="16" FontWeight="Bold" 
+            HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="True"/>
+        <TextBox
+            Canvas.Left="310"
+            Text="{Binding Path=ITerm}"
+            Width="70" Height="45" FontSize="16" FontWeight="Bold" 
+            HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="True"/>
+        <TextBox
+            Canvas.Left="390"
+            Text="{Binding Path=IPuffer}"
+            Width="70" Height="45" FontSize="16" FontWeight="Bold" 
+            HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="True"/>
+        <TextBox
+            Canvas.Left="470"
+            Text="{Binding Path=MaxU}"
+            Width="70" Height="45" FontSize="16" FontWeight="Bold" 
+            HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="True"/>
+        <TextBox
+            Canvas.Left="550"
+            Text="{Binding Path=Stellfaktor}"
+            Width="70" Height="45" FontSize="16" FontWeight="Bold" 
+            HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="True"/>
+        <TextBox
+            Canvas.Left="630"
+            Text="{Binding Path=StellWertMittel}"
+            Width="70" Height="45" FontSize="16" FontWeight="Bold" 
+            HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="True"/>
+        <TextBox
+            Canvas.Left="710"
+            Text="{Binding Path=Stellwert}"
+            Width="70" Height="45" FontSize="16" FontWeight="Bold" 
+            HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="True"/>
+    </Canvas>
+</UserControl>

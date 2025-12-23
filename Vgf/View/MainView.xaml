@@ -1,0 +1,53 @@
+﻿<UserControl x:Class="Vgf.View.MainView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Vgf.View"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="850">
+    <Viewbox>
+        <TabControl Width="800" Height="500">
+            <TabItem 
+                Header="Steuerung"
+                IsSelected="{Binding Path=Tab1Selected}">
+                <local:ControlView DataContext="{Binding Path=ControlViewModel}"/>
+            </TabItem>
+            <TabItem 
+                Header="Zonen"
+                IsSelected="{Binding Path=Tab2Selected}">
+                <local:ZonenView DataContext="{Binding Path=ZonenViewModel}"/>
+            </TabItem>
+            <TabItem 
+                Header="Grafik Sollwerte"
+                IsSelected="{Binding Path=Tab3Selected}">
+                <local:ValuesGrafikView DataContext="{Binding Path=ControlValuesGrafikViewModel}"/>
+            </TabItem>
+            <TabItem 
+                Header="Grafik Istwerte"
+                IsSelected="{Binding Path=Tab4Selected}">
+                <local:ValuesGrafikView DataContext="{Binding Path=CurrentValuesGrafikViewModel}"/>
+            </TabItem>
+            <TabItem 
+                Header="Grafik Einzelwerte">
+                <local:ValuesGrafikView DataContext="{Binding Path=SingleValuesGrafikViewModel}"/>
+            </TabItem>
+            <TabItem 
+                Header="Regler">
+                <local:ReglerZonenView DataContext="{Binding Path=ReglerZonenViewModel}"/>
+            </TabItem>
+            <TabItem 
+                Header="Configuration">
+                <local:ConfigView DataContext="{Binding Path=ConfigViewModel}"/>
+            </TabItem>
+            <TabItem 
+                Header="Smartlink">
+                <local:SmartlinkView DataContext="{Binding Path=SmartlinkViewModel}"/>
+            </TabItem>
+            <TabItem 
+                Header="Adam">
+                <local:AdamView DataContext="{Binding Path=AdamViewModel}"/>
+            </TabItem>
+        </TabControl>
+    </Viewbox>
+</UserControl>

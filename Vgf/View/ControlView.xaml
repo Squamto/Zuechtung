@@ -1,0 +1,251 @@
+﻿<UserControl x:Class="Vgf.View.ControlView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+           	 xmlns:conv="clr-namespace:Framework.ViewModel;assembly=Framework"
+             xmlns:local="clr-namespace:Vgf.View"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Canvas>
+        <Button
+            Canvas.Left="10" Canvas.Top="10"
+            Content="Stopp"
+            Command="{Binding Path=StopCommand}"
+            Width="100" Height="50" FontSize="20" FontWeight="ExtraBold"/>
+        <Button
+            Canvas.Left="120" Canvas.Top="10"
+            Content="Start"
+            Command="{Binding Path=StartCommand}"
+            Width="100" Height="50" FontSize="20" FontWeight="ExtraBold"/>
+        <Button
+            Canvas.Left="230" Canvas.Top="10"
+            Content="Pause"
+            Command="{Binding Path=PauseCommand}"
+            Width="100" Height="50" FontSize="20" FontWeight="ExtraBold"/>
+        <Button
+            Canvas.Left="340" Canvas.Top="10"
+            Content="Weiter"
+            Command="{Binding Path=FurtherCommand}"
+            Width="100" Height="50" FontSize="20" FontWeight="ExtraBold"/>
+        <Button
+            Canvas.Left="340" Canvas.Top="70"
+            Content="Stop Hold"
+            Command="{Binding Path=StopAndHoldCommand}"
+            Width="100" Height="50" FontSize="18" FontWeight="ExtraBold"/>
+        <Button
+            Canvas.Left="670" Canvas.Top="130"
+            Content="Check Gradient"
+            Command="{Binding Path=CheckGradientCommand}"
+            Width="100" Height="40" FontSize="12" />
+        <Button
+            Canvas.Left="670" Canvas.Top="180"
+            Content="Limit Gradient"
+            Command="{Binding Path=LimitGradientCommand}"
+            Width="100" Height="40" FontSize="12" />
+        <Button
+            Canvas.Left="670" Canvas.Top="230"
+            Command="{Binding Path=WriteControlValueStepsXmlCommand}"
+            Width="100" Height="40" FontSize="12">
+            <TextBlock>
+                XML Datei
+                <LineBreak/>
+                Speichern
+            </TextBlock>
+        </Button>
+        <Button
+            Canvas.Left="670" Canvas.Top="280"
+            Command="{Binding Path=ReadControlValueStepsXmlCommand}"
+            Width="100" Height="40" FontSize="12">
+            <TextBlock>
+                XML Datei
+                <LineBreak/>
+                Öffnen
+            </TextBlock>
+        </Button>
+        <Button
+            Canvas.Left="670" Canvas.Top="330"
+            Command="{Binding Path=WriteControlValueStepsTxtCommand}"
+            Width="100" Height="40" FontSize="12">
+            <TextBlock>
+                TXT Datei
+                <LineBreak/>
+                Speichern
+            </TextBlock>
+        </Button>
+        <Button
+            Canvas.Left="670" Canvas.Top="380"
+            Command="{Binding Path=ReadControlValueStepsTxtCommand}"
+            Width="100" Height="40" FontSize="12">
+            <TextBlock>
+                TXT Datei
+                <LineBreak/>
+                Öffnen
+            </TextBlock>
+        </Button>
+        <TextBox
+            Canvas.Left="10" Canvas.Top="70"
+            Text="Status"
+            Width="100" Height="20" FontSize="13" FontWeight="Bold"
+            HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="True" Background="Lime"/>
+        <TextBox
+            Canvas.Left="10" Canvas.Top="90"
+            Text="{Binding Path=CurrentState}"
+            Width="100" Height="30" FontSize="15" FontWeight="Bold"
+            HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="True" Background="Lime"/>
+        <TextBox
+            Canvas.Left="120" Canvas.Top="70"
+            Text="Schritt"
+            Width="100" Height="20" FontSize="13" FontWeight="Bold"
+            HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="True" Background="Lime"/>
+        <TextBox
+            Canvas.Left="120" Canvas.Top="90"
+            Text="{Binding Path=CurrentStep}"
+            Width="100" Height="30" FontSize="15" FontWeight="Bold"
+            HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="True" Background="Lime"/>
+        <TextBox
+            Canvas.Left="230" Canvas.Top="70"
+            Text="Zyklus"
+            Width="100" Height="20" FontSize="13" FontWeight="Bold"
+            HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="True" Background="Lime"/>
+        <TextBox
+            Canvas.Left="230" Canvas.Top="90"
+            Text="{Binding Path=CurrentCycle}"
+            Width="100" Height="30" FontSize="15" FontWeight="Bold"
+            HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="True" Background="Lime"/>
+        <TextBox
+            Canvas.Left="670" Canvas.Top="10"
+            Text="Laufzeit"
+            Width="100" Height="20" FontSize="13" FontWeight="Bold"
+            HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="True" Background="Honeydew" Foreground="Gray"/>
+        <TextBox
+            Canvas.Left="670" Canvas.Top="30"
+            Text="{Binding Path=CurrentTime}"
+            Width="100" Height="30" FontSize="15" FontWeight="Bold"
+            HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="True" Background="Honeydew" Foreground="Gray"/>
+        <TextBox
+            Canvas.Left="670" Canvas.Top="70"
+            Text="Bis Ende"
+            Width="100" Height="20" FontSize="13" FontWeight="Bold"
+            HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="True" Background="Honeydew" Foreground="Gray"/>
+        <TextBox
+            Canvas.Left="670" Canvas.Top="90"
+            Text="{Binding Path=CurrentTimUntilEnd}"
+            Width="100" Height="30" FontSize="15" FontWeight="Bold"
+            HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="True" Background="Honeydew" Foreground="Gray"/>
+        <TextBox
+            Canvas.Left="450" Canvas.Top="10"
+            Text="Start Absolut"
+            Width="210" Height="20" FontSize="13" FontWeight="Bold"
+            HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="True" Background="Honeydew" Foreground="Gray"/>
+        <TextBox
+            Canvas.Left="450" Canvas.Top="30"
+            Text="{Binding Path=StartTimeAbsolut}"
+            Width="210" Height="30" FontSize="15" FontWeight="Bold"
+            HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="True" Background="Honeydew" Foreground="Gray"/>
+        <TextBox
+            Canvas.Left="450" Canvas.Top="70"
+            Text="Ende Absolut"
+            Width="210" Height="20" FontSize="13" FontWeight="Bold"
+            HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="True" Background="Honeydew" Foreground="Gray"/>
+        <TextBox
+            Canvas.Left="450" Canvas.Top="90"
+            Text="{Binding Path=EndTimeAbsolut}"
+            Width="210" Height="30" FontSize="15" FontWeight="Bold"
+            HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="True" Background="Honeydew" Foreground="Gray"/>
+        <DataGrid
+			Canvas.Left="10" Canvas.Top="130"
+            Height="300"
+			AutoGenerateColumns="False"
+			AlternatingRowBackground="Gold"
+			RowBackground="Cornsilk"
+			ItemsSource="{Binding Path=ControlValueSteps}"
+            KeyUp="{conv:EventBinding TableKeyUpCommand}"
+			CanUserAddRows="True"
+			CanUserDeleteRows="True"
+			CanUserReorderColumns="True"
+			CanUserSortColumns="False"
+			IsReadOnly="{Binding Path=IsBusy}"
+			Background="Cornsilk"
+            VerticalScrollBarVisibility="Auto"
+            AllowDrop="True">
+            <DataGrid.Columns>
+                <DataGridTextColumn
+					Width="30"
+					Header="Stp"
+					Binding="{Binding Path=Step, Mode=OneWay}"
+					IsReadOnly="True"/>
+                <DataGridTextColumn
+					Width="60"
+					Header="Zyklen"
+					Binding="{Binding Path=Cycles, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+					IsReadOnly="False"/>
+                <DataGridTextColumn
+					Width="60"
+					Header="Min."
+					Binding="{Binding Path=Minutes, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+					IsReadOnly="False"/>
+                <DataGridTextColumn
+					Width="45"
+					Header="Std"
+					Binding="{Binding Path=Hours, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+					IsReadOnly="False"/>
+                <DataGridTextColumn
+					Width="60"
+					Header="Zeit"
+					Binding="{Binding Path=StepTime, Mode=OneWay}"
+					IsReadOnly="True"/>
+                <DataGridTextColumn
+					Width="60"
+					Header="Zeit+"
+					Binding="{Binding Path=StepTimeKumulativ, Mode=OneWay}"
+					IsReadOnly="True"/>
+                <DataGridTextColumn
+					Width="47"
+					Header="Zone1"
+					Binding="{Binding Path=Zone1, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+					IsReadOnly="False"/>
+
+                <DataGridTextColumn
+					Width="47"
+					Header="Zone2"
+					Binding="{Binding Path=Zone2, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+					IsReadOnly="False"/>
+
+                <DataGridTextColumn
+					Width="47"
+					Header="Zone3"
+					Binding="{Binding Path=Zone3, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+					IsReadOnly="False"/>
+
+                <DataGridTextColumn
+					Width="47"
+					Header="Zone4"
+					Binding="{Binding Path=Zone4, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+					IsReadOnly="False"/>
+
+                <DataGridTextColumn
+					Width="47"
+					Header="Zone5"
+					Binding="{Binding Path=Zone5, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+					IsReadOnly="False"/>
+
+                <DataGridTextColumn
+					Width="47"
+					Header="Zone6"
+					Binding="{Binding Path=Zone6, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+					IsReadOnly="False"/>
+
+                <DataGridTextColumn
+					Width="47"
+					Header="Zone7"
+					Binding="{Binding Path=Zone7, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+					IsReadOnly="False"/>
+
+            </DataGrid.Columns>
+        </DataGrid>
+
+
+
+    </Canvas>
+</UserControl>

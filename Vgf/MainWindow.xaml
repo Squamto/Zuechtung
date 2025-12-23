@@ -1,0 +1,66 @@
+﻿<Window x:Class="Vgf.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Vgf.View"
+        xmlns:common="clr-namespace:Framework.View;assembly=Framework"
+        xmlns:conv="clr-namespace:Framework.ViewModel;assembly=Framework"
+        mc:Ignorable="d"
+        WindowState="Maximized"
+        Title="MainWindow" Height="1000" Width="1800">
+    <Window.Resources>
+        <conv:BoolToVisibilityConverter x:Key="boolToVisiblity"/>
+    </Window.Resources>
+    <Grid>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="20"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="25"/>
+                <RowDefinition/>
+                <RowDefinition Height="40"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <!-- Menu -->
+            <Menu Grid.Row="0" Grid.ColumnSpan="3">
+                <MenuItem Header="_Datei">
+                    <MenuItem Header="Be_enden" Command="{Binding ExitCommand}"/>
+                </MenuItem>
+                <MenuItem Header="_Führungsgrößen">
+                    <MenuItem Header="_Load XML" Command="{Binding ControlViewModel.ReadControlValueStepsXmlCommand}"/>
+                    <MenuItem Header="_Save XML" Command="{Binding ControlViewModel.WriteControlValueStepsXmlCommand}"/>
+                    <Separator Style="{DynamicResource SimpleSeparator}" />
+                    <MenuItem Header="_Load csv/txt" Command="{Binding ControlViewModel.ReadControlValueStepsTxtCommand}"/>
+                    <MenuItem Header="Recent">
+                        <MenuItem Header="{Binding ControlViewModel.LastControlValuesFileName1}" Command="{Binding ControlViewModel.ReadLastControlValuesFileName1Command}"/>
+                        <MenuItem Header="{Binding ControlViewModel.LastControlValuesFileName2}" Command="{Binding ControlViewModel.ReadLastControlValuesFileName2Command}"/>
+                        <MenuItem Header="{Binding ControlViewModel.LastControlValuesFileName3}" Command="{Binding ControlViewModel.ReadLastControlValuesFileName3Command}"/>
+                        <MenuItem Header="{Binding ControlViewModel.LastControlValuesFileName4}" Command="{Binding ControlViewModel.ReadLastControlValuesFileName4Command}"/>
+                    </MenuItem>
+                </MenuItem>
+                <MenuItem Header="_Plot">
+                    <MenuItem Header="_Next" Command="{Binding NextPlotCommand}"/>
+                    <MenuItem Header="_Previous" Command="{Binding PreviousPlotCommand}"/>
+                </MenuItem>
+                <MenuItem Header="_Config">
+                    <MenuItem Header="_Load XML" Command="{Binding ConfigViewModel.SaveConfigCommand}"/>
+                    <MenuItem Header="_Save XML" Command="{Binding ConfigViewModel.ReadConfigCommand}"/>
+                </MenuItem>
+            </Menu>
+            <local:MainView DataContext="{Binding Path=Table1}" Grid.Column="0" Grid.Row="1"/>
+            <local:MainView DataContext="{Binding Path=Table2}" Grid.Column="2" Grid.Row="1"/>
+            <local:MainView DataContext="{Binding Path=Table3}" Grid.Column="0" Grid.Row="3"/>
+            <local:MainView DataContext="{Binding Path=Table4}" Grid.Column="2" Grid.Row="3"/>
+            <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" Background="AliceBlue"/>
+            <GridSplitter Grid.Row="2" HorizontalAlignment="Stretch"  Background="AliceBlue" />
+        </Grid>
+        <common:MessageBoxUserControl 
+            Grid.Row="1" Grid.RowSpan="3"
+            DataContext="{Binding MessageBoxViewModel}" 
+            Visibility="{Binding IsMessageBoxVisible, Converter={StaticResource boolToVisiblity}, FallbackValue=Hidden}"/>
+    </Grid>
+</Window>
