@@ -219,6 +219,16 @@ namespace Vgf.ViewModel
         private void Start()
         {
             this.RefreshStepsInModel();
+
+            // Write Steps to Log
+            {
+                ControlValueSteps steps = new();
+                foreach(ControlValueStepViewModel step in this.ControlValueSteps) {
+                    steps.Steps.Add(step.AsStep());
+                }
+                Global.LogDebug("Current Config:", "\r\n" + steps.ConvertToString());
+            }
+
             if (this.CheckGradientOfTable())
             {
                 Global.UserMsg("Der Führungsgrößengeneraor kann nicht gestartet werden, weil im geplatnten Temperaturregime zu hohe Temperaturgradienten enthalten sind.");
