@@ -229,6 +229,25 @@ namespace Vgf.ViewModel
                 Global.LogDebug("Current Config:", "\r\n" + steps.ConvertToString());
             }
 
+            // Set Windows Sleep Options
+            try {
+                if(Conf.I.GetValueAsBool(ConfigNames.ValDeviceBase(AreaBaseConfig.PreventDisplayOffDuringRun))) {
+                    if(!WindowsPowerManager.IsAvailable()) {
+                        throw new Exception("Windows Standby konnte nicht deaktiviert werden!");
+                    } else {
+                        WindowsPowerManager.PreventSleepAndDisplayOff();
+                    }
+                } else if(Conf.I.GetValueAsBool(ConfigNames.ValDeviceBase(AreaBaseConfig.PreventWindowsSleepDuringRun))) {
+                    if(!WindowsPowerManager.IsAvailable()) {
+                        throw new Exception("Windows Standby konnte nicht deaktiviert werden!");
+                    } else {
+                        WindowsPowerManager.PreventSleep();
+                    }
+                }
+            } catch(Exception ex) {
+                Global.UserMsg(ex);
+            }
+
             if (this.CheckGradientOfTable())
             {
                 Global.UserMsg("Der Führungsgrößengeneraor kann nicht gestartet werden, weil im geplatnten Temperaturregime zu hohe Temperaturgradienten enthalten sind.");
