@@ -326,14 +326,14 @@ namespace Vgf.ViewModel
             {
                 if (lastStep != null)
                 {
-                    this.LinitGradient(lastStep, step);
+                    this.LimitGradient(lastStep, step);
                 }
                 lastStep = step;
             }
             this.RefreshStepsInModel();
         }
 
-        private void LinitGradient(ControlValueStepViewModel lastStep, ControlValueStepViewModel step)
+        private void LimitGradient(ControlValueStepViewModel lastStep, ControlValueStepViewModel step)
         {
             lastStep.Cycles = this.LimitZonenGradient(lastStep.Zone1, step.Zone1, lastStep.Cycles);
             lastStep.Cycles = this.LimitZonenGradient(lastStep.Zone2, step.Zone2, lastStep.Cycles);
