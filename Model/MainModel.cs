@@ -85,7 +85,7 @@ namespace Model
                                 "Es wurde eine große Zeitdifferenz zum letzten Cycle festgestellt. " +
                                 "Bitte stellen Sie sicher, dass der Rechner nicht überlastet ist und nicht in den Standby-Modus wechselt"
                                 );
-                            this.nextCycle = now.AddSeconds(1);
+                            this.nextCycle = now;
                         }
                         this.nextCycle = this.nextCycle.AddSeconds(1);
                         this.Channels.Cycle();
