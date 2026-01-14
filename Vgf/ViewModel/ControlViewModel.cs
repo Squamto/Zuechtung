@@ -491,6 +491,13 @@ namespace Vgf.ViewModel
                 || (this.Channels.ControlState == ControlStates.RequestStop)
                 || (this.Channels.ControlState == ControlStates.Pause);
             RequeryCommands();
+
+            if(this.Channels.ControlState == ControlStates.Stop) {
+                Dispatcher.Invoke(() => {
+                    if(WindowsPowerManager.IsAvailable())
+                        WindowsPowerManager.AllowSleep();
+                });
+            }
         }
 
         private void OnChannelsCurrentStepChanged(object sender, int e)
