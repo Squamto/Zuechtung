@@ -19,7 +19,7 @@ namespace Model
 
     public class MainModel
     {
-        public DateTime lastCycle;
+        public DateTime nextCycle;
         private bool isInitialized;
         private bool isReinitRunning;
         private bool requestStop;
@@ -31,7 +31,7 @@ namespace Model
             this.SmartlinkModel = new SmartlinkModel();
             this.PowerModel = new PowerModel();
             this.Channels = new FgChannels(this);
-            this.lastCycle = DateTime.MinValue;
+            this.nextCycle = DateTime.MaxValue;
             foreach (NameValueItem item in Conf.I.Values)
             {
                 Global.LogInfo(LogCategories.Config, item.Name, item.Value);
@@ -70,14 +70,24 @@ namespace Model
                 }
             }
             this.isLoopRunning = true;
+            this.nextCycle = DateTime.Now;
             while (this.isLoopRunning)
             {
                 try
                 {
                     DateTime now = DateTime.Now;
-                    if ((now - this.lastCycle).TotalSeconds > 1.0)
+                    TimeSpan delta = now - this.nextCycle;
+                    if(delta >= TimeSpan.Zero)
                     {
-                        this.lastCycle = now;
+                        if(delta > TimeSpan.FromSeconds(2)) {
+                            Global.LogInfo(LogCategories.Always, "TimeControl", $"Big time Difference detected (nextCycle: {this.nextCycle}, delta: {delta}), resetting next Cycle to now + 1s");
+                            Global.UserMsg(
+                                "Es wurde eine große Zeitdifferenz zum letzten Cycle festgestellt. " +
+                                "Bitte stellen Sie sicher, dass der Rechner nicht überlastet ist und nicht in den Standby-Modus wechselt"
+                                );
+                            this.nextCycle = now;
+                        }
+                        this.nextCycle = this.nextCycle.AddSeconds(1);
                         this.Channels.Cycle();
                     }
                     if (this.requestStop)

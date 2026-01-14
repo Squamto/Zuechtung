@@ -3,6 +3,8 @@
 	<Base>
 		<MaxTemperatureGradientKelvinPerHour>80</MaxTemperatureGradientKelvinPerHour>
 		<MinTemperatureCheckGradient>50</MinTemperatureCheckGradient>
+    <PreventWindowsSleepDuringRun>true</PreventWindowsSleepDuringRun>
+    <PreventDisplayOffDuringRun>true</PreventDisplayOffDuringRun>
 		<LastControlValuesFileName1>C:\Users\Michael Hermann\Documents\Projects\Zuechtung\eineMInute.xml</LastControlValuesFileName1>
 		<LastControlValuesFileName2>C:\Projects\Zucht\Vgf\vorheizen50_955.xml</LastControlValuesFileName2>
 		<LastControlValuesFileName3>C:\Users\Michael Hermann\Documents\Projects\Zuechtung\Vorlagepraktikum _2018.xml</LastControlValuesFileName3>

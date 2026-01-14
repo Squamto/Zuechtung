@@ -38,6 +38,24 @@ namespace Model.FG
 
         public List<ControlValueStep> Steps { get; set; }
 
+        public string ConvertToString()
+        {
+            string result = "";
+            foreach (ControlValueStep step in this.Steps)
+            {
+                result += step.Cycles.ToString() + "\t";
+                result += step.Zone1 + "\t";
+                result += step.Zone2 + "\t";
+                result += step.Zone3 + "\t";
+                result += step.Zone4 + "\t";
+                result += step.Zone5 + "\t";
+                result += step.Zone6 + "\t";
+                result += step.Zone7 + "\r\n";
+            }
+            return result;
+        }
+
+
         public void ConvertToXml(string filename)
         {
             StreamWriter? writer = null;
@@ -59,20 +77,9 @@ namespace Model.FG
             {
                 File.Delete(filename);
             }
-            foreach (ControlValueStep step in this.Steps)
-            {
-                string line = step.Cycles.ToString() + "\t";
-                line += step.Zone1 + "\t";
-                line += step.Zone2 + "\t";
-                line += step.Zone3 + "\t";
-                line += step.Zone4 + "\t";
-                line += step.Zone5 + "\t";
-                line += step.Zone6 + "\t";
-                line += step.Zone7 + "\r\n";
-                File.AppendAllText(filename, line);
-            }
+            string content = this.ConvertToString();
+            File.AppendAllText(filename, content);
         }
-
 
         private void ConvertFromXml(string filename)
         {

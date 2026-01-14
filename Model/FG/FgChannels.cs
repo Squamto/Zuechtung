@@ -253,25 +253,22 @@ namespace Model.FG
                         break;
                     case ControlStates.Pause:
                         this.CurrentCycle = this.CurrentCycle;
-                        this.Sample();
+                        this.CycleChannels();
                         break;
                     case ControlStates.Run:
-                        if ((this.Steps.Count < 2) || (this.CurrentStep < 0) || (this.CurrentStep > this.Steps.Count - 2))
+                        if ((this.Steps.Count < 2) || (this.CurrentStep < 0) || (this.CurrentStep >= this.Steps.Count - 1))
                         {
                             this.ControlState = ControlStates.RequestStop;
                             return;
                         }
 
-                        if (this.CurrentCycle < this.Steps[this.CurrentStep].Cycles)
+                        if (this.CurrentCycle < this.Steps[this.CurrentStep].Cycles - 1)
                         {
-                            if (this.ControlState == ControlStates.Run)
-                            {
-                                this.CurrentCycle++;
-                            }
+                            this.CurrentCycle++;
                         }
                         else
                         {
-                            if (this.CurrentStep < this.Steps.Count - 2)
+                            if (this.CurrentStep + 1 < this.Steps.Count - 1)
                             {
                                 this.CurrentStep++;
                                 this.CurrentCycle = 0;
@@ -281,7 +278,7 @@ namespace Model.FG
                                 this.ControlState = ControlStates.RequestStop;
                             }
                         }
-                        this.Sample();
+                        this.CycleChannels();
                         break;
                 }
             }
@@ -291,7 +288,7 @@ namespace Model.FG
             }
         }
 
-        private void Sample()
+        private void CycleChannels()
         {
             string logText = $"{DateTime.Now}\t";
             foreach (FgChannel channel in this.Channels)

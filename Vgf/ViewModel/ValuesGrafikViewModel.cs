@@ -216,6 +216,9 @@ namespace Vgf.ViewModel
             this.yAxis.Maximum = double.NaN;
             this.xAxis.Minimum = double.NaN;
             this.xAxis.Maximum = double.NaN;
+            this.xAxis.Reset();
+            this.yAxis.Reset();
+            this.PlotViewModel.InvalidatePlot(true);
         }
 
         private void OnChannelsControlStateChanged(object? sender, ControlStates e)

@@ -47,8 +47,8 @@
                     <MenuItem Header="_Previous" Command="{Binding PreviousPlotCommand}"/>
                 </MenuItem>
                 <MenuItem Header="_Config">
-                    <MenuItem Header="_Load XML" Command="{Binding ConfigViewModel.SaveConfigCommand}"/>
-                    <MenuItem Header="_Save XML" Command="{Binding ConfigViewModel.ReadConfigCommand}"/>
+                    <MenuItem Header="_Load XML" Command="{Binding ConfigViewModel.ReadConfigCommand}"/>
+                    <MenuItem Header="_Save XML" Command="{Binding ConfigViewModel.SaveConfigCommand}"/>
                 </MenuItem>
             </Menu>
             <local:MainView DataContext="{Binding Path=Table1}" Grid.Column="0" Grid.Row="1"/>

@@ -219,6 +219,35 @@ namespace Vgf.ViewModel
         private void Start()
         {
             this.RefreshStepsInModel();
+
+            // Write Steps to Log
+            {
+                ControlValueSteps steps = new();
+                foreach(ControlValueStepViewModel step in this.ControlValueSteps) {
+                    steps.Steps.Add(step.AsStep());
+                }
+                Global.LogDebug("Current Config:", "\r\n" + steps.ConvertToString());
+            }
+
+            // Set Windows Sleep Options
+            try {
+                if(Conf.I.GetValueAsBool(ConfigNames.ValDeviceBase(AreaBaseConfig.PreventDisplayOffDuringRun))) {
+                    if(!WindowsPowerManager.IsAvailable()) {
+                        throw new Exception("Windows Standby konnte nicht deaktiviert werden!");
+                    } else {
+                        WindowsPowerManager.PreventSleepAndDisplayOff();
+                    }
+                } else if(Conf.I.GetValueAsBool(ConfigNames.ValDeviceBase(AreaBaseConfig.PreventWindowsSleepDuringRun))) {
+                    if(!WindowsPowerManager.IsAvailable()) {
+                        throw new Exception("Windows Standby konnte nicht deaktiviert werden!");
+                    } else {
+                        WindowsPowerManager.PreventSleep();
+                    }
+                }
+            } catch(Exception ex) {
+                Global.UserMsg(ex);
+            }
+
             if (this.CheckGradientOfTable())
             {
                 Global.UserMsg("Der Führungsgrößengeneraor kann nicht gestartet werden, weil im geplatnten Temperaturregime zu hohe Temperaturgradienten enthalten sind.");
@@ -297,14 +326,14 @@ namespace Vgf.ViewModel
             {
                 if (lastStep != null)
                 {
-                    this.LinitGradient(lastStep, step);
+                    this.LimitGradient(lastStep, step);
                 }
                 lastStep = step;
             }
             this.RefreshStepsInModel();
         }
 
-        private void LinitGradient(ControlValueStepViewModel lastStep, ControlValueStepViewModel step)
+        private void LimitGradient(ControlValueStepViewModel lastStep, ControlValueStepViewModel step)
         {
             lastStep.Cycles = this.LimitZonenGradient(lastStep.Zone1, step.Zone1, lastStep.Cycles);
             lastStep.Cycles = this.LimitZonenGradient(lastStep.Zone2, step.Zone2, lastStep.Cycles);

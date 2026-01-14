@@ -14,6 +14,8 @@ namespace Config
 		CycleTime,
         MaxTemperatureGradientKelvinPerHour,
         MinTemperatureCheckGradient,
+		PreventWindowsSleepDuringRun,
+		PreventDisplayOffDuringRun,
         LastControlValuesFileName1, 
 		LastControlValuesFileName2,
 		LastControlValuesFileName3,
