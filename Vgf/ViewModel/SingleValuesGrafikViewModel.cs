@@ -300,7 +300,7 @@ namespace Vgf.ViewModel
                 this.lineSeriesActualTemperature.Points.Add(new DataPoint(this.currentCycle, this.Channels.Channels[this.CurrentZone-1].CurrentTemperature));
                 this.lineSeriesPower.Points.Add(new DataPoint(this.currentCycle, this.Channels.Channels[this.CurrentZone - 1].CurrentPower));
             }
-            this.PlotViewModel.InvalidatePlot(true);
+            //this.PlotViewModel.InvalidatePlot(true);
         }
 
         private void OnChannelsControlStateChanged(object? sender, ControlStates e)

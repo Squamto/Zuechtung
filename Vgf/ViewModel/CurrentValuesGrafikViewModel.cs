@@ -50,7 +50,8 @@ namespace Vgf.ViewModel
                 this.yAxis.Maximum = 1000.0;
                 this.yAxis.Reset();
                 this.xAxis.Reset();
-                this.PlotViewModel.InvalidatePlot(true);
+
+                this.UpdatePlot();
             }
         }
 
@@ -67,7 +68,8 @@ namespace Vgf.ViewModel
                 this.lineSeriesZone6.Points.Add(new DataPoint(this.currentCycle, this.Channels.Channels[5].CurrentTemperature));
                 this.lineSeriesZone7.Points.Add(new DataPoint(this.currentCycle, this.Channels.Channels[6].CurrentTemperature));
             }
-            this.PlotViewModel.InvalidatePlot(true);
+
+            this.UpdatePlot();
         }
     }
 }

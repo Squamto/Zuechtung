@@ -90,7 +90,7 @@ namespace Model.FG
         public int CurrentCycle
         {
             get => this.currentCycle;
-            private set
+            set
             {
                 this.currentCycle = value;
                 this.CurrentCycleChanged?.Invoke(this, value);
@@ -262,20 +262,18 @@ namespace Model.FG
                             return;
                         }
 
-                        if (this.CurrentCycle < this.Steps[this.CurrentStep].Cycles - 1)
-                        {
-                            this.CurrentCycle++;
-                        }
-                        else
-                        {
-                            if (this.CurrentStep + 1 < this.Steps.Count - 1)
-                            {
-                                this.CurrentStep++;
-                                this.CurrentCycle = 0;
-                            }
-                            else
-                            {
-                                this.ControlState = ControlStates.RequestStop;
+
+                        for(int i = 0; i < 1000; i++) {
+                            if(this.CurrentCycle < this.Steps[this.CurrentStep].Cycles - 1) {
+                                this.CurrentCycle++;
+                            } else {
+                                if(this.CurrentStep + 1 < this.Steps.Count - 1) {
+                                    this.CurrentStep++;
+                                    this.CurrentCycle = 0;
+                                } else {
+                                    this.ControlState = ControlStates.RequestStop;
+                                }
+                                break;
                             }
                         }
                         this.CycleChannels();

@@ -53,7 +53,7 @@ namespace Vgf.ViewModel
             this.yAxis.Maximum = 1000.0;
             this.yAxis.Reset();
             this.xAxis.Reset();
-            this.PlotViewModel.InvalidatePlot(true);
+            this.UpdatePlot();
         }
     }
 }

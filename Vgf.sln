@@ -14,6 +14,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CC07C359-7AB3-4477-BFB3-C29563958B2D}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		Configs\eineMInute02.xml = Configs\eineMInute02.xml
+		Configs\Vorlagepraktikum _2018.xml = Configs\Vorlagepraktikum _2018.xml
 	EndProjectSection
 EndProject
 Global
@@ -41,5 +43,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {85757856-1299-4870-8F14-B5F1FDD3E958}
 	EndGlobalSection
 EndGlobal

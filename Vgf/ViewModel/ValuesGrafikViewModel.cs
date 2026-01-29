@@ -93,6 +93,12 @@ namespace Vgf.ViewModel
             set => this.Set(value);
         }
 
+        public bool UpdateInRealtime
+        {
+            get => this.Get<bool>();
+            set => this.Set(value);
+        }
+
         public bool IsShowZone1
         {
             get => this.Get<bool>();
@@ -100,7 +106,7 @@ namespace Vgf.ViewModel
             {
                 this.Set(value);
                 this.lineSeriesZone1.IsVisible = value;
-                this.PlotViewModel.InvalidatePlot(true);
+                this.UpdatePlot();
             }
         }
 
@@ -111,7 +117,7 @@ namespace Vgf.ViewModel
             {
                 this.Set(value);
                 this.lineSeriesZone2.IsVisible = value;
-                this.PlotViewModel.InvalidatePlot(true);
+                this.UpdatePlot();
             }
         }
 
@@ -122,7 +128,7 @@ namespace Vgf.ViewModel
             {
                 this.Set(value);
                 this.lineSeriesZone3.IsVisible = value;
-                this.PlotViewModel.InvalidatePlot(true);
+                this.UpdatePlot();
             }
         }
 
@@ -133,7 +139,7 @@ namespace Vgf.ViewModel
             {
                 this.Set(value);
                 this.lineSeriesZone4.IsVisible = value;
-                this.PlotViewModel.InvalidatePlot(true);
+                this.UpdatePlot();
             }
         }
 
@@ -144,7 +150,7 @@ namespace Vgf.ViewModel
             {
                 this.Set(value);
                 this.lineSeriesZone5.IsVisible = value;
-                this.PlotViewModel.InvalidatePlot(true);
+                this.UpdatePlot();
             }
         }
 
@@ -155,7 +161,7 @@ namespace Vgf.ViewModel
             {
                 this.Set(value);
                 this.lineSeriesZone6.IsVisible = value;
-                this.PlotViewModel.InvalidatePlot(true);
+                this.UpdatePlot();
             }
         }
 
@@ -166,7 +172,7 @@ namespace Vgf.ViewModel
             {
                 this.Set(value);
                 this.lineSeriesZone7.IsVisible = value;
-                this.PlotViewModel.InvalidatePlot(true);
+                this.UpdatePlot();
             }
         }
 
@@ -210,6 +216,14 @@ namespace Vgf.ViewModel
             this.IsShowZone7 = true;
         }
 
+        public void UpdatePlot()
+        {
+            if (this.UpdateInRealtime)
+            {
+                this.PlotViewModel.InvalidatePlot(true);
+            }
+        }
+
         private void AutoZoom()
         {
             this.yAxis.Minimum = double.NaN;
@@ -218,7 +232,7 @@ namespace Vgf.ViewModel
             this.xAxis.Maximum = double.NaN;
             this.xAxis.Reset();
             this.yAxis.Reset();
-            this.PlotViewModel.InvalidatePlot(true);
+            this.UpdatePlot();
         }
 
         private void OnChannelsControlStateChanged(object? sender, ControlStates e)

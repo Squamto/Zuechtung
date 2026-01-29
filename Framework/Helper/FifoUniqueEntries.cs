@@ -40,6 +40,7 @@ namespace Framework.Helper
             {
                 // Remove the existing item from the queue
                 this.queue.Remove(item);
+                // Why Add and remove?
                 this.set.Remove(item);
             }
             else if (this.queue.Count >= this.capacity)

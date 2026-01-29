@@ -12,7 +12,11 @@
             Canvas.Left="0"
             Content="&lt;"
             Command="{Binding Path=PreviusPlotCommand}"
-            FontSize="15" Width="50"/>
+            FontSize="15" Width="30"/>
+        <CheckBox
+            Content="Update"
+            Canvas.Left="35"
+			IsChecked="{Binding Path=UpdateInRealtime}"/>
         <CheckBox
             Content="Zone1"
             Canvas.Left="100"
@@ -50,7 +54,7 @@
             Canvas.Right="0"
             Content="&gt;"
             Command="{Binding Path=NextPlotCommand}"
-            FontSize="15" Width="50"/>
+            FontSize="15" Width="30"/>
         <oxy:PlotView 
             Canvas.Top="30"
             Model="{Binding PlotViewModel}" 
