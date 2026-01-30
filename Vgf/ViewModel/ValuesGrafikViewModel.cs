@@ -12,6 +12,9 @@ namespace Vgf.ViewModel
     using OxyPlot.Axes;
     using OxyPlot.Legends;
     using OxyPlot;
+    using Windows.Foundation.Metadata;
+    using System.Security.Cryptography;
+
 
     /// <summary>
     /// Defines the values grafik view model.
@@ -20,20 +23,16 @@ namespace Vgf.ViewModel
     {
         protected LinearAxis yAxis;
         protected LinearAxis xAxis;
-        protected LineSeries lineSeriesZone1;
-        protected LineSeries lineSeriesZone2;
-        protected LineSeries lineSeriesZone3;
-        protected LineSeries lineSeriesZone4;
-        protected LineSeries lineSeriesZone5;
-        protected LineSeries lineSeriesZone6;
-        protected LineSeries lineSeriesZone7;
+        protected GraphViewModel graphViewModel;
         protected MainModel mainModel;
+        protected IEnumerable<IDataPointProvider> dataPointsProvider;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ValuesGrafikViewModel"/> class.
         /// </summary>
-        public ValuesGrafikViewModel(MainModel mainModel, string headline)
+        public ValuesGrafikViewModel(MainModel mainModel, GraphViewModel graphViewModel, string headline)
         {
+            this.graphViewModel = graphViewModel;
             this.mainModel = mainModel;
             this.mainModel.Channels.ControlStateChanged += this.OnChannelsControlStateChanged;
             this.Channels = this.mainModel.Channels;
@@ -55,27 +54,16 @@ namespace Vgf.ViewModel
             this.xAxis = new LinearAxis { Position = AxisPosition.Bottom };
             this.PlotViewModel.Axes.Add(this.yAxis);
             this.PlotViewModel.Axes.Add(this.xAxis);
-            this.lineSeriesZone1 = new LineSeries() { Title = "Z1", Color = OxyColors.Red};
-            this.lineSeriesZone2 = new LineSeries() { Title = "Z2", Color = OxyColors.Brown };
-            this.lineSeriesZone3 = new LineSeries() { Title = "Z3", Color = OxyColors.DarkViolet };
-            this.lineSeriesZone4 = new LineSeries() { Title = "Z4", Color = OxyColors.Turquoise };
-            this.lineSeriesZone5 = new LineSeries() { Title = "Z5", Color = OxyColors.Green };
-            this.lineSeriesZone6 = new LineSeries() { Title = "Z6", Color = OxyColors.Blue };
-            this.lineSeriesZone7 = new LineSeries() { Title = "Z7", Color = OxyColors.Black };
-            this.PlotViewModel.Series.Add(this.lineSeriesZone1);
-            this.PlotViewModel.Series.Add(this.lineSeriesZone2);
-            this.PlotViewModel.Series.Add(this.lineSeriesZone3);
-            this.PlotViewModel.Series.Add(this.lineSeriesZone4);
-            this.PlotViewModel.Series.Add(this.lineSeriesZone5);
-            this.PlotViewModel.Series.Add(this.lineSeriesZone6);
-            this.PlotViewModel.Series.Add(this.lineSeriesZone7);
-            this.IsShowZone1 = true;
-            this.IsShowZone2 = true;
-            this.IsShowZone3 = true;
-            this.IsShowZone4 = true;
-            this.IsShowZone5 = true;
-            this.IsShowZone6 = true;
-            this.IsShowZone7 = true;
+            this.PlotViewModel.Series.Add(graphViewModel.lineSeriesZone1);
+            this.PlotViewModel.Series.Add(graphViewModel.lineSeriesZone2);
+            this.PlotViewModel.Series.Add(graphViewModel.lineSeriesZone3);
+            this.PlotViewModel.Series.Add(graphViewModel.lineSeriesZone4);
+            this.PlotViewModel.Series.Add(graphViewModel.lineSeriesZone5);
+            this.PlotViewModel.Series.Add(graphViewModel.lineSeriesZone6);
+            this.PlotViewModel.Series.Add(graphViewModel.lineSeriesZone7);
+
+            this.graphViewModel.OnDataChanged += this.AutoZoom;
+
             this.NextPlotCommand = new RelayCommand(() => this.NextPlotCommandOccured?.Invoke(this, EventArgs.Empty), (o) => this.mainModel.Channels.ControlState == ControlStates.Stop, Global.UserMsg);
             this.PreviusPlotCommand = new RelayCommand(() => this.PreviousCommandOccured?.Invoke(this, EventArgs.Empty), (o) => this.mainModel.Channels.ControlState == ControlStates.Stop, Global.UserMsg);
             this.AutoZoomCommand = new RelayCommand(this.AutoZoom, (o) => true, Global.UserMsg);
@@ -93,99 +81,147 @@ namespace Vgf.ViewModel
             set => this.Set(value);
         }
 
-        public bool UpdateInRealtime
-        {
-            get => this.Get<bool>();
-            set => this.Set(value);
-        }
-
-        public bool IsShowZone1
-        {
-            get => this.Get<bool>();
-            set
-            {
-                this.Set(value);
-                this.lineSeriesZone1.IsVisible = value;
-                this.UpdatePlot();
-            }
-        }
-
-        public bool IsShowZone2
-        {
-            get => this.Get<bool>();
-            set
-            {
-                this.Set(value);
-                this.lineSeriesZone2.IsVisible = value;
-                this.UpdatePlot();
-            }
-        }
-
-        public bool IsShowZone3
-        {
-            get => this.Get<bool>();
-            set
-            {
-                this.Set(value);
-                this.lineSeriesZone3.IsVisible = value;
-                this.UpdatePlot();
-            }
-        }
-
-        public bool IsShowZone4
-        {
-            get => this.Get<bool>();
-            set
-            {
-                this.Set(value);
-                this.lineSeriesZone4.IsVisible = value;
-                this.UpdatePlot();
-            }
-        }
-
-        public bool IsShowZone5
-        {
-            get => this.Get<bool>();
-            set
-            {
-                this.Set(value);
-                this.lineSeriesZone5.IsVisible = value;
-                this.UpdatePlot();
-            }
-        }
-
-        public bool IsShowZone6
-        {
-            get => this.Get<bool>();
-            set
-            {
-                this.Set(value);
-                this.lineSeriesZone6.IsVisible = value;
-                this.UpdatePlot();
-            }
-        }
-
-        public bool IsShowZone7
-        {
-            get => this.Get<bool>();
-            set
-            {
-                this.Set(value);
-                this.lineSeriesZone7.IsVisible = value;
-                this.UpdatePlot();
-            }
-        }
+        public bool IsShowZone1 { get => this.graphViewModel.IsShowZone1; set => this.graphViewModel.IsShowZone1 = value; }
+        public bool IsShowZone2 { get => this.graphViewModel.IsShowZone2; set => this.graphViewModel.IsShowZone2 = value; }
+        public bool IsShowZone3 { get => this.graphViewModel.IsShowZone3; set => this.graphViewModel.IsShowZone3 = value; }
+        public bool IsShowZone4 { get => this.graphViewModel.IsShowZone4; set => this.graphViewModel.IsShowZone4 = value; }
+        public bool IsShowZone5 { get => this.graphViewModel.IsShowZone5; set => this.graphViewModel.IsShowZone5 = value; }
+        public bool IsShowZone6 { get => this.graphViewModel.IsShowZone6; set => this.graphViewModel.IsShowZone6 = value; }
+        public bool IsShowZone7 { get => this.graphViewModel.IsShowZone7; set => this.graphViewModel.IsShowZone7 = value; }
 
         public RelayCommand NextPlotCommand {  get; }
         public RelayCommand PreviusPlotCommand { get; }
         public RelayCommand AutoZoomCommand { get; }
 
-        public void ShowLogdata(int valueRow)
+        public void AutoZoom()
         {
             this.yAxis.Minimum = double.NaN;
             this.yAxis.Maximum = double.NaN;
             this.xAxis.Minimum = double.NaN;
             this.xAxis.Maximum = double.NaN;
+            this.xAxis.Reset();
+            this.yAxis.Reset();
+            this.PlotViewModel.InvalidatePlot(true);
+        }
+
+        private void OnChannelsControlStateChanged(object? sender, ControlStates e)
+        {
+            BaseViewModel.RequeryCommands();
+        }
+
+    public class GraphViewModel : BaseViewModel
+ {
+        public LineSeries lineSeriesZone1;
+        public LineSeries lineSeriesZone2;
+        public LineSeries lineSeriesZone3;
+        public LineSeries lineSeriesZone4;
+        public LineSeries lineSeriesZone5;
+        public LineSeries lineSeriesZone6;
+        public LineSeries lineSeriesZone7;
+
+        public GraphViewModel()
+        {
+            this.lineSeriesZone1 = new LineSeries() { Title = "Z1", Color = OxyColors.Red };
+            this.lineSeriesZone2 = new LineSeries() { Title = "Z2", Color = OxyColors.Brown };
+            this.lineSeriesZone3 = new LineSeries() { Title = "Z3", Color = OxyColors.DarkViolet };
+            this.lineSeriesZone4 = new LineSeries() { Title = "Z4", Color = OxyColors.Turquoise };
+            this.lineSeriesZone5 = new LineSeries() { Title = "Z5", Color = OxyColors.Green };
+            this.lineSeriesZone6 = new LineSeries() { Title = "Z6", Color = OxyColors.Blue };
+            this.lineSeriesZone7 = new LineSeries() { Title = "Z7", Color = OxyColors.Black };
+
+            this.IsShowZone1 = true;
+            this.IsShowZone2 = true;
+            this.IsShowZone3 = true;
+            this.IsShowZone4 = true;
+            this.IsShowZone5 = true;
+            this.IsShowZone6 = true;
+            this.IsShowZone7 = true;
+        }
+
+        public event Action OnDataChanged = delegate { };
+
+        public void InvokeOnDataChanged() => this.OnDataChanged();
+
+        public bool IsShowZone1
+        {
+            get => this.lineSeriesZone1.IsVisible ;
+            set
+            {
+                this.Set(value);
+                this.lineSeriesZone1.IsVisible = value;
+                this.OnDataChanged();
+            }
+        }
+
+        public bool IsShowZone2
+        {
+            get => this.lineSeriesZone2.IsVisible ;
+            set
+            {
+                this.Set(value);
+                this.lineSeriesZone2.IsVisible = value;
+                this.OnDataChanged();
+            }
+        }
+
+        public bool IsShowZone3
+        {
+            get => this.lineSeriesZone3.IsVisible ;
+            set
+            {
+                this.Set(value);
+                this.lineSeriesZone3.IsVisible = value;
+                this.OnDataChanged();
+            }
+        }
+
+        public bool IsShowZone4
+        {
+            get => this.lineSeriesZone4.IsVisible ;
+            set
+            {
+                this.Set(value);
+                this.lineSeriesZone4.IsVisible = value;
+                this.OnDataChanged();
+            }
+        }
+
+        public bool IsShowZone5
+        {
+            get => this.lineSeriesZone5.IsVisible ;
+            set
+            {
+                this.Set(value);
+                this.lineSeriesZone5.IsVisible = value;
+                this.OnDataChanged();
+            }
+        }
+
+        public bool IsShowZone6
+        {
+            get => this.lineSeriesZone6.IsVisible ;
+            set
+            {
+                this.Set(value);
+                this.lineSeriesZone6.IsVisible = value;
+                this.OnDataChanged();
+            }
+        }
+
+        public bool IsShowZone7
+        {
+            get => this.lineSeriesZone7.IsVisible ;
+            set
+            {
+                this.Set(value);
+                this.lineSeriesZone7.IsVisible = value;
+                this.OnDataChanged();
+            }
+        }
+
+
+        public void ShowLogdata(int valueRow, MainModel mainModel)
+        {
             int currentCycle = 0;
             this.lineSeriesZone1.Points.Clear();
             this.lineSeriesZone2.Points.Clear();
@@ -194,8 +230,7 @@ namespace Vgf.ViewModel
             this.lineSeriesZone5.Points.Clear();
             this.lineSeriesZone6.Points.Clear();
             this.lineSeriesZone7.Points.Clear();
-            this.PlotViewModel.InvalidatePlot(true);
-            List<Tuple<double, double, double, double, double, double, double>> values = this.mainModel.Sampler.GetValueTable(valueRow);
+            List<Tuple<double, double, double, double, double, double, double>> values = mainModel.Sampler.GetValueTable(valueRow);
             foreach (Tuple<double, double, double, double, double, double, double> val in values)
             {
                 currentCycle++;
@@ -207,6 +242,7 @@ namespace Vgf.ViewModel
                 this.lineSeriesZone6.Points.Add(new DataPoint(currentCycle, val.Item6));
                 this.lineSeriesZone7.Points.Add(new DataPoint(currentCycle, val.Item7));
             }
+
             this.IsShowZone1 = true;
             this.IsShowZone2 = true;
             this.IsShowZone3 = true;
@@ -215,30 +251,5 @@ namespace Vgf.ViewModel
             this.IsShowZone6 = true;
             this.IsShowZone7 = true;
         }
-
-        public void UpdatePlot()
-        {
-            if (this.UpdateInRealtime)
-            {
-                this.PlotViewModel.InvalidatePlot(true);
-            }
-        }
-
-        private void AutoZoom()
-        {
-            this.yAxis.Minimum = double.NaN;
-            this.yAxis.Maximum = double.NaN;
-            this.xAxis.Minimum = double.NaN;
-            this.xAxis.Maximum = double.NaN;
-            this.xAxis.Reset();
-            this.yAxis.Reset();
-            this.UpdatePlot();
-        }
-
-        private void OnChannelsControlStateChanged(object? sender, ControlStates e)
-        {
-            BaseViewModel.RequeryCommands();
-        }
-
-    }
+    }   }
 }
