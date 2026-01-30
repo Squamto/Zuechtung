@@ -16,6 +16,7 @@ namespace Config
         MinTemperatureCheckGradient,
 		PreventWindowsSleepDuringRun,
 		PreventDisplayOffDuringRun,
+		GraphRefreshInterval,
         LastControlValuesFileName1, 
 		LastControlValuesFileName2,
 		LastControlValuesFileName3,

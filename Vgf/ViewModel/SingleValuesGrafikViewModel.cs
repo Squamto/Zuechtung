@@ -25,19 +25,29 @@ namespace Vgf.ViewModel
         protected LineSeries lineSeriesSetTemperatur;
         protected LineSeries lineSeriesActualTemperature;
         protected LineSeries lineSeriesPower;
-        private int currentCycle;
+        protected GraphDataSource temperatureDataSource;
+        protected GraphDataSource setpointDataSource;
+        protected GraphDataSource powerDataSource;
         private MainModel mainModel;
-        private bool stopGraph;
+        private bool shouldUpdate;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ValuesGrafikViewModel"/> class.
         /// </summary>
-        public SingleValuesGrafikViewModel(MainModel mainModel, string headline)
-        {
+        public SingleValuesGrafikViewModel(
+            MainModel mainModel,
+            GraphDataSource temperatureDataSource,
+            GraphDataSource setpointDataSource,
+            GraphDataSource powerDataSource,
+            string headline
+        ) {
+            this.temperatureDataSource = temperatureDataSource;
+            this.setpointDataSource = setpointDataSource;
+            this.powerDataSource = powerDataSource;
+
             this.mainModel = mainModel;
             this.mainModel.Channels.ControlStateChanged += this.OnChannelsControlStateChanged;
             this.Channels = this.mainModel.Channels;
-            this.Channels.CurrentCycleChanged += this.OnChannelsCurrentCycleChanged;
             this.Channels.CurrentStepChanged += this.OnChannelsCurrentStepChanged;
             this.PlotViewModel = new ViewResolvingPlotModel { Title = headline };
             this.PlotViewModel.Legends.Add(new Legend
@@ -56,24 +66,40 @@ namespace Vgf.ViewModel
             this.yAxisTemperature = new LinearAxis { Position = AxisPosition.Left, Key=nameof(this.yAxisTemperature) };
             this.yAxisPower = new LinearAxis { Position = AxisPosition.Right, Key = nameof(this.yAxisPower) };
             this.xAxis = new LinearAxis { Position = AxisPosition.Bottom, Key = nameof(this.xAxis) };
+
             this.PlotViewModel.Axes.Add(this.yAxisTemperature);
             this.PlotViewModel.Axes.Add(this.yAxisPower);
             this.PlotViewModel.Axes.Add(this.xAxis);
+
             this.lineSeriesSetTemperatur = new LineSeries();
             this.lineSeriesSetTemperatur.YAxisKey = this.yAxisTemperature.Key;
             this.lineSeriesSetTemperatur.RenderInLegend = true;
             this.lineSeriesSetTemperatur.Title = "FG";
+            this.lineSeriesSetTemperatur.ItemsSource = setpointDataSource.dataCollections[0];
+
             this.lineSeriesActualTemperature = new LineSeries();
             this.lineSeriesActualTemperature.YAxisKey = this.yAxisTemperature.Key;
             this.lineSeriesActualTemperature.RenderInLegend = true;
             this.lineSeriesActualTemperature.Title = "Temp";
+            this.lineSeriesActualTemperature.ItemsSource = temperatureDataSource.dataCollections[0];
+
             this.lineSeriesPower = new LineSeries();
             this.lineSeriesPower.YAxisKey = this.yAxisPower.Key;
             this.lineSeriesPower.Title = "Power";
             this.lineSeriesPower.Color = OxyColors.Brown;
+            this.lineSeriesPower.ItemsSource = powerDataSource.dataCollections[0];
+
             this.PlotViewModel.Series.Add(this.lineSeriesSetTemperatur);
             this.PlotViewModel.Series.Add(this.lineSeriesActualTemperature);
             this.PlotViewModel.Series.Add(this.lineSeriesPower);
+
+            this.temperatureDataSource.OnDataChanged += delegate { this.shouldUpdate = true; };
+            this.setpointDataSource.OnDataChanged += delegate { this.shouldUpdate = true; };
+            this.powerDataSource.OnDataChanged += delegate { this.shouldUpdate = true; };
+            this.mainModel.Channels.CurrentCycleChanged +=(object? sender, int e) => {
+                if(e % 3 == 0 && this.shouldUpdate)
+                    this.AutoZoom();
+            };
             this.NextPlotCommand = new RelayCommand(() => this.NextPlotCommandOccured?.Invoke(this, EventArgs.Empty), (o) => this.mainModel.Channels.ControlState == ControlStates.Stop, Global.UserMsg);
             this.PreviusPlotCommand = new RelayCommand(() => this.PreviousCommandOccured?.Invoke(this, EventArgs.Empty), (o) => this.mainModel.Channels.ControlState == ControlStates.Stop, Global.UserMsg);
             this.AutoZoomCommand = new RelayCommand(this.AutoZoom, (o) => true, Global.UserMsg);
@@ -104,7 +130,7 @@ namespace Vgf.ViewModel
                 if (value)
                 {
                     this.ClearAllZoneShow();
-                    this.ShowLogdataWithRefresh(1);
+                    this.SwitchZone(1);
                 }
                 this.Set(value);
             }
@@ -118,7 +144,7 @@ namespace Vgf.ViewModel
                 if (value)
                 {
                     this.ClearAllZoneShow();
-                    this.ShowLogdataWithRefresh(2);
+                    this.SwitchZone(2);
                 }
                 this.Set(value);
             }
@@ -132,7 +158,7 @@ namespace Vgf.ViewModel
                 if (value)
                 {
                     this.ClearAllZoneShow();
-                    this.ShowLogdataWithRefresh(3);
+                    this.SwitchZone(3);
                 }
                 this.Set(value);
             }
@@ -146,7 +172,7 @@ namespace Vgf.ViewModel
                 if (value)
                 {
                     this.ClearAllZoneShow();
-                    this.ShowLogdataWithRefresh(4);
+                    this.SwitchZone(4);
                 }
                 this.Set(value);
             }
@@ -160,7 +186,7 @@ namespace Vgf.ViewModel
                 if (value)
                 {
                     this.ClearAllZoneShow();
-                    this.ShowLogdataWithRefresh(5);
+                    this.SwitchZone(5);
                 }
                 this.Set(value);
             }
@@ -174,7 +200,7 @@ namespace Vgf.ViewModel
                 if (value)
                 {
                     this.ClearAllZoneShow();
-                    this.ShowLogdataWithRefresh(6);
+                    this.SwitchZone(6);
                 }
                 this.Set(value);
             }
@@ -188,7 +214,7 @@ namespace Vgf.ViewModel
                 if (value)
                 {
                     this.ClearAllZoneShow();
-                    this.ShowLogdataWithRefresh(7);
+                    this.SwitchZone(7);
                 }
                 this.Set(value);
             }
@@ -198,44 +224,26 @@ namespace Vgf.ViewModel
         public RelayCommand PreviusPlotCommand { get; }
         public RelayCommand AutoZoomCommand { get; }
 
-        public void ShowLogdata(int zone)
+        public void AutoZoom()
         {
-            try
-            {
-                this.xAxis.Minimum = double.NaN;
-                this.xAxis.Maximum = double.NaN;
-                this.yAxisTemperature.Minimum = double.NaN;
-                this.yAxisTemperature.Maximum = double.NaN;
-                this.yAxisPower.Minimum = double.NaN;
-                this.yAxisPower.Maximum = double.NaN;
-                this.yAxisPower.Maximum = double.NaN;
-                this.stopGraph = true;
-                this.CurrentZone = zone;
-                this.currentCycle = 0;
-                this.lineSeriesSetTemperatur.Points.Clear();
-                this.lineSeriesActualTemperature.Points.Clear();
-                this.lineSeriesPower.Points.Clear();
-                this.PlotViewModel.InvalidatePlot(true);
-                List<Tuple<double, double, double>> values = this.mainModel.Sampler.GetAllValuesFromZone(zone);
-                foreach (Tuple<double, double, double> val in values)
-                {
-                    this.currentCycle++;
-                    this.lineSeriesSetTemperatur.Points.Add(new DataPoint(this.currentCycle, val.Item1));
-                    this.lineSeriesActualTemperature.Points.Add(new DataPoint(this.currentCycle, val.Item2));
-                    this.lineSeriesPower.Points.Add(new DataPoint(this.currentCycle, val.Item3));
-                }
-                this.PlotViewModel.InvalidatePlot(true);
-            }
-            finally
-            {
-                this.stopGraph = false;           
-            }
+            this.yAxisPower.Minimum = double.NaN;
+            this.yAxisPower.Maximum = double.NaN;
+            this.yAxisTemperature.Minimum = double.NaN;
+            this.yAxisTemperature.Maximum = double.NaN;
+            this.xAxis.Minimum = double.NaN;
+            this.xAxis.Maximum = double.NaN;
+            this.yAxisTemperature.Reset();
+            this.yAxisPower.Reset();
+            this.xAxis.Reset();
+            this.PlotViewModel.InvalidatePlot(true);
         }
 
-        private void ShowLogdataWithRefresh(int zone)
+        private void SwitchZone(int zone)
         {
-            this.mainModel.Sampler.Refresh();
-            this.ShowLogdata(zone);
+            this.lineSeriesSetTemperatur.ItemsSource = setpointDataSource.dataCollections[zone - 1];
+            this.lineSeriesActualTemperature.ItemsSource = temperatureDataSource.dataCollections[zone - 1];
+            this.lineSeriesPower.ItemsSource = powerDataSource.dataCollections[zone - 1];
+            this.AutoZoom();
         }
 
         private void ClearAllZoneShow()
@@ -249,58 +257,9 @@ namespace Vgf.ViewModel
             this.Set(false, nameof(this.IsShowZone7));
         }
 
-        private void AutoZoom()
-        {
-            this.yAxisPower.Minimum = double.NaN;
-            this.yAxisPower.Maximum = double.NaN;
-            this.yAxisTemperature.Minimum = double.NaN;
-            this.yAxisTemperature.Maximum = double.NaN;
-            this.xAxis.Minimum = double.NaN;
-            this.xAxis.Maximum = double.NaN;
-        }
-
         private void OnChannelsCurrentStepChanged(object sender, int e)
         {
-            if (e == 0)
-            {
-                this.currentCycle = 0;
-                this.lineSeriesSetTemperatur.Points.Clear();
-                this.lineSeriesActualTemperature.Points.Clear();
-                this.lineSeriesPower.Points.Clear();
-                int i = 0;
-                foreach (StepChannels step in this.Channels.Steps)
-                {
-                    i += step.Cycles;
-                }
-
-                this.xAxis.Minimum = 0.0;
-                this.xAxis.Maximum = i;
-                this.yAxisTemperature.Minimum = 0.0;
-                this.yAxisTemperature.Maximum = 1000.0;
-                this.yAxisTemperature.Reset();
-                this.yAxisPower.Minimum = 0.0;
-                this.yAxisPower.Maximum = 10.0;
-                this.yAxisPower.Reset();
-                this.xAxis.Reset();
-                this.PlotViewModel.InvalidatePlot(true);
-            }
-        }
-
-        private void OnChannelsCurrentCycleChanged(object sender, int e)
-        {
-            if (this.stopGraph)
-            {
-                return;
-            }
-
-            this.currentCycle++;
-            foreach (FgChannel channel in this.Channels.Channels)
-            {
-                this.lineSeriesSetTemperatur.Points.Add(new DataPoint(this.currentCycle, this.Channels.Channels[this.CurrentZone-1].CurrentSetpoint));
-                this.lineSeriesActualTemperature.Points.Add(new DataPoint(this.currentCycle, this.Channels.Channels[this.CurrentZone-1].CurrentTemperature));
-                this.lineSeriesPower.Points.Add(new DataPoint(this.currentCycle, this.Channels.Channels[this.CurrentZone - 1].CurrentPower));
-            }
-            //this.PlotViewModel.InvalidatePlot(true);
+            if (e == 0) this.AutoZoom();
         }
 
         private void OnChannelsControlStateChanged(object? sender, ControlStates e)

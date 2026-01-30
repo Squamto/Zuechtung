@@ -262,8 +262,7 @@ namespace Model.FG
                             return;
                         }
 
-
-                        for(int i = 0; i < 1000; i++) {
+                        for(int i = 0; i < 1; i++) {
                             if(this.CurrentCycle < this.Steps[this.CurrentStep].Cycles - 1) {
                                 this.CurrentCycle++;
                             } else {

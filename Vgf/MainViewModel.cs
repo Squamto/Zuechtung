@@ -6,12 +6,15 @@
 namespace Vgf
 {
     using System;
+    using System.Text.Json.Serialization;
     using Config;
     using Framework;
     using Framework.ViewModel;
+    using Microsoft.CSharp.RuntimeBinder;
     using Model;
     using Model.FG;
     using Model.Log;
+    using OxyPlot;
     using Vgf.ViewModel;
 
     /// <summary>
@@ -50,10 +53,19 @@ namespace Vgf
                 this.SmartlinkViewModel = new SmartlinkViewModel(this.MainModel.SmartlinkModel);
                 this.AdamViewModel = new AdamViewModel(this.MainModel.PowerModel);
 
-                this.Table1 = new TableViewModel(this.MainModel, this.ZonenViewModel, this.ReglerZonenViewModel, this.ControlViewModel, this.ConfigViewModel, this.SmartlinkViewModel, this.AdamViewModel);
-                this.Table2 = new TableViewModel(this.MainModel, this.ZonenViewModel, this.ReglerZonenViewModel, this.ControlViewModel, this.ConfigViewModel, this.SmartlinkViewModel, this.AdamViewModel);
-                this.Table3 = new TableViewModel(this.MainModel, this.ZonenViewModel, this.ReglerZonenViewModel, this.ControlViewModel, this.ConfigViewModel, this.SmartlinkViewModel, this.AdamViewModel);
-                this.Table4 = new TableViewModel(this.MainModel, this.ZonenViewModel, this.ReglerZonenViewModel, this.ControlViewModel, this.ConfigViewModel, this.SmartlinkViewModel, this.AdamViewModel);
+                this.CurrentTemperaturesGraphData = new GraphDataSource();
+                this.CurrentSetPointsGraphData = new GraphDataSource();
+                this.CurrentPowerGraphData = new GraphDataSource();
+                this.ControlValuesGraphData = new GraphDataSource();
+
+                this.MainModel.Channels.CurrentCycleChanged += this.OnChannelsCurrentCycleChanged;
+                this.MainModel.Channels.CurrentStepChanged += this.OnChannelsCurrentStepChanged;
+                this.MainModel.Channels.StepsChanged += this.OnChannelsStepsChanged;
+
+                this.Table1 = new TableViewModel(this.MainModel, CurrentTemperaturesGraphData, CurrentSetPointsGraphData, CurrentPowerGraphData, ControlValuesGraphData, this.ZonenViewModel, this.ReglerZonenViewModel, this.ControlViewModel, this.ConfigViewModel, this.SmartlinkViewModel, this.AdamViewModel);
+                this.Table2 = new TableViewModel(this.MainModel, CurrentTemperaturesGraphData, CurrentSetPointsGraphData, CurrentPowerGraphData, ControlValuesGraphData, this.ZonenViewModel, this.ReglerZonenViewModel, this.ControlViewModel, this.ConfigViewModel, this.SmartlinkViewModel, this.AdamViewModel);
+                this.Table3 = new TableViewModel(this.MainModel, CurrentTemperaturesGraphData, CurrentSetPointsGraphData, CurrentPowerGraphData, ControlValuesGraphData, this.ZonenViewModel, this.ReglerZonenViewModel, this.ControlViewModel, this.ConfigViewModel, this.SmartlinkViewModel, this.AdamViewModel);
+                this.Table4 = new TableViewModel(this.MainModel, CurrentTemperaturesGraphData, CurrentSetPointsGraphData, CurrentPowerGraphData, ControlValuesGraphData, this.ZonenViewModel, this.ReglerZonenViewModel, this.ControlViewModel, this.ConfigViewModel, this.SmartlinkViewModel, this.AdamViewModel);
                 this.Table1.ControlValuesGrafikViewModel.NextPlotCommandOccured += this.OnControlValuesGrafikViewModelNextPlotCommandOccured;
                 this.Table1.ControlValuesGrafikViewModel.PreviousCommandOccured += this.OnControlValuesGrafikViewModelPreviousCommandOccured;
                 this.Table1.CurrentValuesGrafikViewModel.NextPlotCommandOccured += this.OnControlValuesGrafikViewModelNextPlotCommandOccured;
@@ -98,13 +110,19 @@ namespace Vgf
                 this.ControlViewModel.CurrentTimUntilEnd = "-";
                 this.ControlViewModel.Init();
             }
-            catch (Exception exception)
+            catch (RuntimeBinderException exception)
             {
                 Global.UserMsg(exception);
             }
         }
 
         public MainModel? MainModel { get; }
+
+        public GraphDataSource? CurrentTemperaturesGraphData { get; }
+        public GraphDataSource? CurrentSetPointsGraphData { get; }
+        public GraphDataSource? CurrentPowerGraphData { get; }
+
+        public GraphDataSource? ControlValuesGraphData { get; }
 
         public ZonenViewModel? ZonenViewModel { get; }
 
@@ -156,18 +174,25 @@ namespace Vgf
 
         private void ShowLogData()
         {
-            this.Table1.SingleValuesGrafikViewModel.ShowLogdata(this.Table1.SingleValuesGrafikViewModel.CurrentZone);
-            this.Table2.SingleValuesGrafikViewModel.ShowLogdata(this.Table2.SingleValuesGrafikViewModel.CurrentZone);
-            this.Table3.SingleValuesGrafikViewModel.ShowLogdata(this.Table3.SingleValuesGrafikViewModel.CurrentZone);
-            this.Table4.SingleValuesGrafikViewModel.ShowLogdata(this.Table4.SingleValuesGrafikViewModel.CurrentZone);
-            this.Table1.ControlValuesGrafikViewModel.ShowLogdata(SamplerFile.STARTTABSETVALUES);
-            this.Table2.ControlValuesGrafikViewModel.ShowLogdata(SamplerFile.STARTTABSETVALUES);
-            this.Table3.ControlValuesGrafikViewModel.ShowLogdata(SamplerFile.STARTTABSETVALUES);
-            this.Table4.ControlValuesGrafikViewModel.ShowLogdata(SamplerFile.STARTTABSETVALUES);
-            this.Table1.CurrentValuesGrafikViewModel.ShowLogdata(SamplerFile.STARTTABTEMPERATURES);
-            this.Table2.CurrentValuesGrafikViewModel.ShowLogdata(SamplerFile.STARTTABTEMPERATURES);
-            this.Table3.CurrentValuesGrafikViewModel.ShowLogdata(SamplerFile.STARTTABTEMPERATURES);
-            this.Table4.CurrentValuesGrafikViewModel.ShowLogdata(SamplerFile.STARTTABTEMPERATURES);
+            this.MainModel.Sampler.Refresh();
+            this.CurrentPowerGraphData?.LoadLogData(SamplerFile.STARTTABPOWER, this.MainModel);
+            this.CurrentTemperaturesGraphData?.LoadLogData(SamplerFile.STARTTABTEMPERATURES, this.MainModel);
+            this.ControlValuesGraphData?.LoadLogData(SamplerFile.STARTTABSETVALUES, this.MainModel);
+
+            this.Table1.ControlValuesGrafikViewModel.AutoZoom();
+            this.Table2.ControlValuesGrafikViewModel.AutoZoom();
+            this.Table3.ControlValuesGrafikViewModel.AutoZoom();
+            this.Table4.ControlValuesGrafikViewModel.AutoZoom();
+
+            this.Table1.CurrentValuesGrafikViewModel.AutoZoom();
+            this.Table2.CurrentValuesGrafikViewModel.AutoZoom();
+            this.Table3.CurrentValuesGrafikViewModel.AutoZoom();
+            this.Table4.CurrentValuesGrafikViewModel.AutoZoom();
+
+            this.Table1.SingleValuesGrafikViewModel.AutoZoom();
+            this.Table2.SingleValuesGrafikViewModel.AutoZoom();
+            this.Table3.SingleValuesGrafikViewModel.AutoZoom();
+            this.Table4.SingleValuesGrafikViewModel.AutoZoom();
         }
 
         private void OnChannelsControlStateChanged(object? sender, ControlStates e)
@@ -183,6 +208,54 @@ namespace Vgf
         private void OnControlValuesGrafikViewModelNextPlotCommandOccured(object? sender, EventArgs e)
         {
             this.NextPlot();
+        }
+
+        private void OnChannelsCurrentCycleChanged(object? sender, int cycles)
+        {
+            List<FgChannel> Channels = this.MainModel.Channels.Channels;
+
+            for (int i = 0; i < Channels.Count; i++) {
+                this.CurrentTemperaturesGraphData.dataCollections[i].Add(new DataPoint(this.CurrentTemperaturesGraphData.dataCollections[i].Count, Channels[i].CurrentTemperature));
+                this.CurrentSetPointsGraphData.dataCollections[i].Add(new DataPoint(this.CurrentSetPointsGraphData.dataCollections[i].Count, Channels[i].CurrentSetpoint));
+                this.CurrentPowerGraphData.dataCollections[i].Add(new DataPoint(this.CurrentPowerGraphData.dataCollections[i].Count, Channels[i].CurrentPower));
+            }
+
+            int refreshInterval = Conf.I.GetValueAsInt(ConfigNames.ValDeviceBase(AreaBaseConfig.GraphRefreshInterval));
+            if(refreshInterval == 0 || cycles % refreshInterval == 0) {
+                this.CurrentTemperaturesGraphData.InvokeOnDataChanged();
+                this.CurrentSetPointsGraphData.InvokeOnDataChanged();
+                this.CurrentPowerGraphData.InvokeOnDataChanged();
+            }
+        }
+
+        private void OnChannelsCurrentStepChanged(object? sender, int step)
+        {
+            if(step == 0) {
+                this.CurrentTemperaturesGraphData.Clear();
+                this.CurrentSetPointsGraphData.Clear();
+                this.CurrentPowerGraphData.Clear();
+            }
+        }
+
+        private void OnChannelsStepsChanged(object? sender, EventArgs e)
+        {
+            FgChannels Channels = this.MainModel.Channels;
+
+            this.ControlValuesGraphData.Clear();
+
+            int curentCycle = 0;
+            foreach (StepChannels step in Channels.Steps)
+            {
+                this.ControlValuesGraphData.dataCollections[0].Add(new DataPoint(curentCycle, step.TargetTemps[ZoneNames.Zone1]));
+                this.ControlValuesGraphData.dataCollections[1].Add(new DataPoint(curentCycle, step.TargetTemps[ZoneNames.Zone2]));
+                this.ControlValuesGraphData.dataCollections[2].Add(new DataPoint(curentCycle, step.TargetTemps[ZoneNames.Zone3]));
+                this.ControlValuesGraphData.dataCollections[3].Add(new DataPoint(curentCycle, step.TargetTemps[ZoneNames.Zone4]));
+                this.ControlValuesGraphData.dataCollections[4].Add(new DataPoint(curentCycle, step.TargetTemps[ZoneNames.Zone5]));
+                this.ControlValuesGraphData.dataCollections[5].Add(new DataPoint(curentCycle, step.TargetTemps[ZoneNames.Zone6]));
+                this.ControlValuesGraphData.dataCollections[6].Add(new DataPoint(curentCycle, step.TargetTemps[ZoneNames.Zone7]));
+                curentCycle += step.Cycles;
+            }
+            this.ControlValuesGraphData.InvokeOnDataChanged();
         }
     }
 }

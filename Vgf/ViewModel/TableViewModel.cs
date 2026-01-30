@@ -19,6 +19,10 @@ namespace Vgf
         /// </summary>
         public TableViewModel(
             MainModel mainModel, 
+            GraphDataSource currentTemperaturesGraphData,
+            GraphDataSource currentSetpointsGraphData,
+            GraphDataSource currentPowerGraphData,
+            GraphDataSource controlValuesGraphData,
             ZonenViewModel zonenViewModel, 
             ReglerZonenViewModel? reglerZonenViewModel, 
             ControlViewModel controlViewModel, 
@@ -31,9 +35,15 @@ namespace Vgf
             this.ReglerZonenViewModel = reglerZonenViewModel;
             this.ControlViewModel = controlViewModel;
             this.ConfigViewModel = configViewModel;
-            this.ControlValuesGrafikViewModel = new ControlValuesGrafikViewModel(this.MainModel);
-            this.CurrentValuesGrafikViewModel = new CurrentValuesGrafikViewModel(this.MainModel);
-            this.SingleValuesGrafikViewModel = new SingleValuesGrafikViewModel(this.MainModel, "Einzelwerte der Zone");
+            this.ControlValuesGrafikViewModel = new ControlValuesGrafikViewModel(this.MainModel, controlValuesGraphData);
+            this.CurrentValuesGrafikViewModel = new CurrentValuesGrafikViewModel(this.MainModel, currentTemperaturesGraphData);
+            this.SingleValuesGrafikViewModel = new SingleValuesGrafikViewModel(
+                this.MainModel,
+                currentTemperaturesGraphData,
+                currentSetpointsGraphData,
+                currentPowerGraphData,
+                "Einzelwerte der Zone"
+            );
             this.SmartlinkViewModel = smartlinkViewModel;
             this.AdamViewModel = adamViewModel;
         }

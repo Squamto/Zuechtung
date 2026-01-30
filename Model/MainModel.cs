@@ -86,7 +86,7 @@ namespace Model
                                 );
                             this.nextCycle = now;
                         }
-                        this.nextCycle = this.nextCycle.AddSeconds(1);
+                        this.nextCycle = this.nextCycle.AddMilliseconds(100);
                         this.Channels.Cycle();
                     }
                     if (this.requestStop)

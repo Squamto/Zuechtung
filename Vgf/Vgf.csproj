@@ -79,4 +79,8 @@
     </Page>
   </ItemGroup>
 
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="copy ..\configdata.xml $(OutDir)Config" />
+  </Target>
+
 </Project>
