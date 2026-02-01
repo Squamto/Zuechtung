@@ -29,7 +29,6 @@ namespace Vgf.ViewModel
         protected GraphDataSource setpointDataSource;
         protected GraphDataSource powerDataSource;
         private MainModel mainModel;
-        private bool shouldUpdate;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ValuesGrafikViewModel"/> class.
@@ -93,14 +92,11 @@ namespace Vgf.ViewModel
             this.PlotViewModel.Series.Add(this.lineSeriesActualTemperature);
             this.PlotViewModel.Series.Add(this.lineSeriesPower);
 
-            this.temperatureDataSource.OnDataChanged += delegate { this.shouldUpdate = true; };
-            this.setpointDataSource.OnDataChanged += delegate { this.shouldUpdate = true; };
-            this.powerDataSource.OnDataChanged += delegate { this.shouldUpdate = true; };
-            this.mainModel.Channels.CurrentCycleChanged +=(object? sender, int e) => {
-                if(e % 3 == 0 && this.shouldUpdate)
-                    this.AutoZoom();
-            };
-            this.NextPlotCommand = new RelayCommand(() => this.NextPlotCommandOccured?.Invoke(this, EventArgs.Empty), (o) => this.mainModel.Channels.ControlState == ControlStates.Stop, Global.UserMsg);
+            this.temperatureDataSource.OnDataChanged += () => this.PlotViewModel.InvalidatePlot(true);
+            this.setpointDataSource.OnDataChanged += () => this.PlotViewModel.InvalidatePlot(true);
+            this.powerDataSource.OnDataChanged += () => this.PlotViewModel.InvalidatePlot(true);
+
+            this.NextPlotCommand = new RelayCommand(() => this.NextPlotCommandOccured?.Invoke(this, EventArgs.Empty), (o) => true || this.mainModel.Channels.ControlState == ControlStates.Stop, Global.UserMsg);
             this.PreviusPlotCommand = new RelayCommand(() => this.PreviousCommandOccured?.Invoke(this, EventArgs.Empty), (o) => this.mainModel.Channels.ControlState == ControlStates.Stop, Global.UserMsg);
             this.AutoZoomCommand = new RelayCommand(this.AutoZoom, (o) => true, Global.UserMsg);
             this.ClearAllZoneShow();

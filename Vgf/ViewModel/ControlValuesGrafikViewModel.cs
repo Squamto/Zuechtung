@@ -22,8 +22,6 @@ namespace Vgf.ViewModel
         /// </summary>
         public ControlValuesGrafikViewModel(MainModel mainModel, GraphDataSource graphDataSource)
             : base(mainModel, graphDataSource, "Temperaturführung in °C")
-        {
-            this.mainModel.Channels.StepsChanged += (object? sender, EventArgs e) => this.AutoZoom();
-        }
+        { }
     }
 }

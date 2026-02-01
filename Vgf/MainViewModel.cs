@@ -154,12 +154,26 @@ namespace Vgf
 
         private void NextPlot()
         {
-            this.MainModel.Sampler.ReadNextTemperaturLog();
-            this.ControlViewModel.StartTimeAbsolut = this.MainModel.Sampler.LogStart;
-            this.ControlViewModel.EndTimeAbsolut = this.MainModel.Sampler.LogEnd;
-            this.ControlViewModel.CurrentTime = this.MainModel.Sampler.LogDuration;
-            this.ControlViewModel.CurrentTimUntilEnd = "-";
-            this.ShowLogData();
+            // TODO: remove
+            {
+                var rng = new Random();
+                double value = 100.0;
+                for(int i = 0; i < 200000; i++) {
+                    value += (rng.NextDouble() - 0.5);
+                    foreach(var collection in CurrentTemperaturesGraphData.dataCollections)
+                        collection.Add(new DataPoint(i, value));
+                    foreach(var collection in CurrentSetPointsGraphData.dataCollections)
+                        collection.Add(new DataPoint(i, value));
+                    foreach(var collection in CurrentPowerGraphData.dataCollections)
+                        collection.Add(new DataPoint(i, value));
+                }
+            }
+            //this.MainModel.Sampler.ReadNextTemperaturLog();
+            //this.ControlViewModel.StartTimeAbsolut = this.MainModel.Sampler.LogStart;
+            //this.ControlViewModel.EndTimeAbsolut = this.MainModel.Sampler.LogEnd;
+            //this.ControlViewModel.CurrentTime = this.MainModel.Sampler.LogDuration;
+            //this.ControlViewModel.CurrentTimUntilEnd = "-";
+            //this.ShowLogData();
         }
 
         private void PreviuosPlot()

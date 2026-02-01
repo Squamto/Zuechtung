@@ -78,7 +78,7 @@ namespace Model
                     DateTime now = DateTime.Now;
                     TimeSpan delta = now - this.nextCycle;
                     if(delta >= TimeSpan.Zero) {
-                        if(false && delta > TimeSpan.FromSeconds(2)) {
+                        if(delta > TimeSpan.FromSeconds(2)) {
                             Global.LogInfo(LogCategories.Always, "TimeControl", $"Big time Difference detected (nextCycle: {this.nextCycle}, delta: {delta}), resetting next Cycle to now + 1s");
                             Global.UserMsg(
                                 "Es wurde eine große Zeitdifferenz zum letzten Cycle festgestellt. " +

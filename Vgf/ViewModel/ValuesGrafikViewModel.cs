@@ -34,7 +34,6 @@ namespace Vgf.ViewModel
         protected LineSeries lineSeriesZone7;
         protected MainModel mainModel;
         protected GraphDataSource graphDataSource;
-        protected bool shouldUpdate;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ValuesGrafikViewModel"/> class.
@@ -85,11 +84,7 @@ namespace Vgf.ViewModel
             this.IsShowZone6 = true;
             this.IsShowZone7 = true;
 
-            this.graphDataSource.OnDataChanged += delegate { this.shouldUpdate = true; };
-            this.mainModel.Channels.CurrentCycleChanged +=(object? sender, int e) => {
-                if(e % 3 == 0 && this.shouldUpdate)
-                    this.AutoZoom();
-            };
+            this.graphDataSource.OnDataChanged += () => this.PlotViewModel.InvalidatePlot(true);
 
             this.NextPlotCommand = new RelayCommand(() => this.NextPlotCommandOccured?.Invoke(this, EventArgs.Empty), (o) => this.mainModel.Channels.ControlState == ControlStates.Stop, Global.UserMsg);
             this.PreviusPlotCommand = new RelayCommand(() => this.PreviousCommandOccured?.Invoke(this, EventArgs.Empty), (o) => this.mainModel.Channels.ControlState == ControlStates.Stop, Global.UserMsg);
